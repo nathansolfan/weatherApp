@@ -15,7 +15,7 @@ class WeatherController extends Controller
         $apiKey = env('OPENWEATHER_API_KEY');
 
         // Make a request to the One Call API 3.0
-        $response = Http::get("https://api.openweathermap.org/data/3.0/onecall?lat={$lat}&lon={$lon}&exclude=minutely,hourly,alerts&units=metric&appid={$apiKey}");
+        $response = Http::get("https://api.openweathermap.org/data/2.5/weather?lat={$lat}&lon={$lon}&exclude=minutely,hourly,alerts&units=metric&appid={$apiKey}");
 
         if ($response->successful()) {
             // the json answer into a variable
@@ -23,6 +23,7 @@ class WeatherController extends Controller
             return view('weather', ['weather' => $weatherApp]);
         }
 
-        return view('weather', ['error' => 'Unable to fetch the dataa']);
+        $error = $response->json()['message'] ?? 'Unable to fetch weather data.';
+        return view('weather', ['error' => $error]);
     }
 }
